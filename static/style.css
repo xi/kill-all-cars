@@ -1,0 +1,19 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	color-scheme: dark;
+}
+
+body {
+	block-size: 100dvb;
+}
+
+canvas {
+	block-size: 100%;
+	inline-size: 100%;
+	touch-action: none;
+}
