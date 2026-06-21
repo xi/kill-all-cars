@@ -18,6 +18,15 @@ export class BlockView {
         ];
     }
 
+    fromScreenXY(x, y) {
+        const sum = (x - this.x0) / this.size;
+        const dif = (y - this.y0) / this.size / FACTOR;
+        return [
+            Math.floor((sum - dif) / 2),
+            Math.floor((sum + dif) / 2),
+        ];
+    }
+
     render() {
         this.ctx.fillStyle = 'currentColor';
         this.ctx.font = '16px sans-serif';
@@ -37,6 +46,30 @@ export class BlockView {
                 this.ctx.closePath();
                 this.ctx.fill();
             }
+        }
+    }
+
+    handleKey(event, state) {
+        if (event.key === 'Escape') {
+            state.block = null;
+            return true;
+        }
+    }
+
+    handleClick(event, state) {
+        const size = this.block.constructor.size;
+        const [x, y] = this.fromScreenXY(event.clientX, event.clientY);
+        if (x < -2 || y < -2 || x >= size + 2 || y >= size + 2) {
+            state.block = null;
+            return true;
+        }
+    }
+
+    handle(event, state) {
+        if (event.type === 'keyup') {
+            return this.handleKey(event, state);
+        } else if (event.type === 'click') {
+            return this.handleClick(event, state);
         }
     }
 }

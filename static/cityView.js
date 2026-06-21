@@ -37,4 +37,17 @@ export class CityView {
             }
         }
     }
+
+    handle(event, state) {
+        if (event.type === 'click') {
+            const x = Math.floor((event.clientX - this.x0) / this.blockSize);
+            const y = Math.floor((event.clientY - this.y0) / this.blockSize);
+            if (0 <= x && x < this.city.constructor.width) {
+                if (0 <= y && y < this.city.constructor.height) {
+                    state.block = this.city.blocks[y][x];
+                    return true;
+                }
+            }
+        }
+    }
 }

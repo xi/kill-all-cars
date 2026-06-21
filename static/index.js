@@ -25,5 +25,14 @@ const refresh = function() {
     getView().render();
 };
 
+const handle = function(event) {
+    if (getView().handle(event, state)) {
+        refresh();
+    }
+};
+
+window.addEventListener('keyup', handle);
+canvas.addEventListener('click', handle);
+
 window.addEventListener('resize', refresh);
 refresh();
