@@ -5,6 +5,10 @@ export const DIR = {
     EAST: 3,
 };
 
+export const dirToAxis = function(dir) {
+    return (dir === DIR.NORTH || dir === DIR.SOUTH) ? 0 : 1;
+};
+
 export const TERRAIN = {
     GREENERY: 1,
     STREET: 2,

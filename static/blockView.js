@@ -30,6 +30,13 @@ export class BlockView {
     }
 
     render(state) {
+        this.ctx.fillStyle = 'currentColor';
+        this.ctx.font = '16px sans-serif';
+        this.ctx.fillText(`residential space: ${this.block.residential}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 0 + PADDING, PADDING);
+        this.ctx.fillText(`commercial served: ${this.block.commercialServed}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 1 + PADDING, PADDING);
+        this.ctx.fillText(`green served: ${this.block.greenServed}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 2 + PADDING, PADDING);
+        this.ctx.fillText(`pollution: ${this.block.pollution}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 3 + PADDING, PADDING);
+
         for (let y = 0; y < this.block.constructor.size; y++) {
             for (let x = this.block.constructor.size - 1; x >= 0; x--) {
                 this.ctx.beginPath();

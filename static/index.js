@@ -1,6 +1,7 @@
 import { City } from './model.js';
 import { CityView } from './cityView.js';
 import { BlockView } from './blockView.js';
+import { solve } from './simulation.js';
 import { TERRAIN } from './constants.js';
 
 const canvas = document.querySelector('canvas');
@@ -26,6 +27,7 @@ const refresh = function() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
+    solve(city);
     getView().render(state);
 };
 
