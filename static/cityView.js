@@ -45,6 +45,8 @@ export class CityView {
             if (0 <= x && x < this.city.constructor.width) {
                 if (0 <= y && y < this.city.constructor.height) {
                     state.block = this.city.blocks[y][x];
+                    state.xHighlight = null;
+                    state.yHighlight = null;
                     return true;
                 }
             }

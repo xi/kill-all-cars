@@ -1,6 +1,7 @@
 import { City } from './model.js';
 import { CityView } from './cityView.js';
 import { BlockView } from './blockView.js';
+import { TERRAIN } from './constants.js';
 
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
@@ -8,6 +9,9 @@ const ctx = canvas.getContext('2d');
 const city = City.random();
 const state = {
     block: null,
+    terrain: TERRAIN.GREENERY,
+    xHighlight: null,
+    yHighlight: null,
 };
 
 const getView = function() {
@@ -22,7 +26,7 @@ const refresh = function() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
-    getView().render();
+    getView().render(state);
 };
 
 const handle = function(event) {
@@ -33,6 +37,7 @@ const handle = function(event) {
 
 window.addEventListener('keyup', handle);
 canvas.addEventListener('click', handle);
+canvas.addEventListener('mousemove', handle);
 
 window.addEventListener('resize', refresh);
 refresh();
