@@ -1,11 +1,27 @@
 import { choice } from './utils.js';
 import { DIR, TERRAIN } from './constants.js';
 
+const COLORS = {
+    [TERRAIN.GREENERY]: [10, 130, 10],
+    [TERRAIN.STREET]: [90, 90, 90],
+    [TERRAIN.RESIDENTIAL]: [110, 60, 60],
+    [TERRAIN.COMMERCIAL]: [240, 250, 10],
+};
 const NON_STREET = [
     TERRAIN.GREENERY,
     TERRAIN.RESIDENTIAL,
     TERRAIN.COMMERCIAL,
 ];
+
+export const getColor = function(tx, ty) {
+    let [r, g, b] = COLORS[TERRAIN.STREET];
+    if (tx !== TERRAIN.STREET && ty !== TERRAIN.STREET) {
+        const cx = COLORS[tx];
+        const cy = COLORS[ty];
+        [r, g, b] = cx.map((c, i) => (c + cy[i]) / 2);
+    }
+    return `rgb(${r} ${g} ${b})`;
+};
 
 class Block {
     static size = 11;
@@ -37,6 +53,10 @@ class Block {
         }
 
         return block;
+    }
+
+    getTileColor(x, y) {
+        return getColor(this.xAxis[x], this.yAxis[y]);
     }
 }
 
