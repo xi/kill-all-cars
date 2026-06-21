@@ -53,6 +53,16 @@ export class BlockView {
         ];
     }
 
+    renderHeader() {
+        const w = (this.ctx.canvas.width - 2 * PADDING) / 4;
+        this.ctx.fillStyle = 'currentColor';
+        this.ctx.font = '16px sans-serif';
+        this.ctx.fillText(`Residents: ${Math.round(this.block.residential * 100)}K`, w * 0 + PADDING, PADDING);
+        this.ctx.fillText(`Service Access: ${Math.round(this.block.commercialServed * 100)}%`, w * 1 + PADDING, PADDING);
+        this.ctx.fillText(`Nature Access: ${Math.round(this.block.greenServed * 100)}%`, w * 2 + PADDING, PADDING);
+        this.ctx.fillText(`Air Quality: ${Math.round(100 - this.block.pollution * 100)}%`, w * 3 + PADDING, PADDING);
+    }
+
     renderDebug(dir, x0, y0) {
         const cars = this.block.flowTo.car[dir] + this.block.flowFrom.car[dir];
         const bikes = this.block.flowTo.bike[dir] + this.block.flowFrom.bike[dir];
@@ -67,12 +77,7 @@ export class BlockView {
     }
 
     render(state) {
-        this.ctx.fillStyle = 'currentColor';
-        this.ctx.font = '16px sans-serif';
-        this.ctx.fillText(`residential space: ${this.block.residential}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 0 + PADDING, PADDING);
-        this.ctx.fillText(`commercial served: ${this.block.commercialServed}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 1 + PADDING, PADDING);
-        this.ctx.fillText(`green served: ${this.block.greenServed}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 2 + PADDING, PADDING);
-        this.ctx.fillText(`pollution: ${this.block.pollution}`, (this.ctx.canvas.width - 2 * PADDING) / 4 * 3 + PADDING, PADDING);
+        this.renderHeader();
 
         for (let y = 0; y < this.block.constructor.size; y++) {
             for (let x = this.block.constructor.size - 1; x >= 0; x--) {
