@@ -1,5 +1,9 @@
+import { City } from './model.js';
+
 const canvas = document.querySelector('canvas');
 const ctx = canvas.getContext('2d');
+
+const city = City.random();
 
 const refresh = function() {
     const rect = canvas.getBoundingClientRect();
