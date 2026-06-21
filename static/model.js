@@ -15,10 +15,10 @@ const NON_STREET = [
 
 export const getColor = function(tx, ty) {
     let [r, g, b] = COLORS[TERRAIN.STREET];
-    if (tx !== TERRAIN.STREET && ty !== TERRAIN.STREET) {
-        const cx = COLORS[tx];
-        const cy = COLORS[ty];
-        [r, g, b] = cx.map((c, i) => (c + cy[i]) / 2);
+    if (!ty) {
+        [r, g, b] = COLORS[tx];
+    } else if (tx !== TERRAIN.STREET && ty !== TERRAIN.STREET) {
+        [r, g, b] = COLORS[tx].map((c, i) => (c + COLORS[ty][i]) / 2);
     }
     return `rgb(${r} ${g} ${b})`;
 };

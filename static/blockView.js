@@ -3,6 +3,8 @@ import { getColor } from './model.js';
 
 const FACTOR = 0.4;
 const PADDING = 20;
+const HEADER_SIZE = 25;
+const FOOTER_SIZE = 50;
 
 const renderLines = function(ctx, lines, x0, y0, fontSize) {
     ctx.fillStyle = 'currentColor';
@@ -17,9 +19,22 @@ export class BlockView {
         this.block = block;
         this.ctx = ctx;
 
-        this.size = Math.min(ctx.canvas.width, ctx.canvas.height / FACTOR) / (block.constructor.size + 2) / 2;
+        const height = ctx.canvas.height - HEADER_SIZE - FOOTER_SIZE;
+        this.size = Math.min(ctx.canvas.width, height / FACTOR) / (block.constructor.size + 2) / 2;
         this.x0 = ctx.canvas.width / 2 - this.size * block.constructor.size;
-        this.y0 = ctx.canvas.height / 2;
+        this.y0 = HEADER_SIZE + height / 2;
+
+        this.buttons = Object.values(TERRAIN).map((terrain, i) => ({
+            terrain: terrain,
+            x: ctx.canvas.width / 2 + FOOTER_SIZE * 1.1 * (i - 2),
+            y: ctx.canvas.height - FOOTER_SIZE,
+            width: FOOTER_SIZE,
+            height: FOOTER_SIZE,
+            handle: (event, state) => {
+                state.terrain = terrain;
+                return true;
+            },
+        }));
     }
 
     toScreenXY(x, y) {
@@ -63,7 +78,7 @@ export class BlockView {
             for (let x = this.block.constructor.size - 1; x >= 0; x--) {
                 this.ctx.beginPath();
                 if (x === state.xHighlight || y === state.yHighlight) {
-                    this.ctx.fillStyle = getColor(state.terrain, state.terrain);
+                    this.ctx.fillStyle = getColor(state.terrain);
                 } else {
                     this.ctx.fillStyle = this.block.getTileColor(x, y);
                 }
@@ -82,11 +97,24 @@ export class BlockView {
             const y0 = PADDING + 40;
             const y1 = (this.ctx.canvas.height - PADDING - y0) / 3 * 2 + y0;
 
-            this.renderDebug(DIR.NORTH, PADDING, y0);
-            this.renderDebug(DIR.WEST, PADDING, y1);
+            this.renderDebug(DIR.NORTH, x0, y0);
+            this.renderDebug(DIR.WEST, x0, y1);
             this.renderDebug(DIR.EAST, x1, y0);
             this.renderDebug(DIR.SOUTH, x1, y1);
         }
+
+        this.buttons.forEach(btn => {
+            this.ctx.beginPath();
+            this.ctx.roundRect(btn.x, btn.y, btn.width, btn.height, btn.width * 0.1);
+            this.ctx.fillStyle = getColor(btn.terrain);
+            this.ctx.fill();
+            if (state.terrain === btn.terrain) {
+                this.ctx.strokeStyle = '#fff';
+                this.ctx.lineWidth = 3;
+                this.ctx.stroke();
+                // this.ctx.strokeRect(btn.x, btn.y, btn.width, btn.height);
+            }
+        });
     }
 
     handleKey(event, state) {
@@ -112,6 +140,17 @@ export class BlockView {
     }
 
     handleClick(event, state) {
+        for (const btn of this.buttons) {
+            if (
+                event.clientX >= btn.x
+                && event.clientX < btn.x + btn.width
+                && event.clientY >= btn.y
+                && event.clientY < btn.y + btn.height
+            ) {
+                return btn.handle(event, state);
+            }
+        }
+
         const size = this.block.constructor.size;
         const [x, y] = this.fromScreenXY(event.clientX, event.clientY);
         const yy = size - y - 1;
