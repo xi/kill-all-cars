@@ -13,6 +13,7 @@ const state = {
     terrain: TERRAIN.GREENERY,
     xHighlight: null,
     yHighlight: null,
+    debug: false,
 };
 
 const getView = function() {

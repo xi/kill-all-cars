@@ -1,7 +1,16 @@
-import { TERRAIN } from './constants.js';
+import { TERRAIN, DIR } from './constants.js';
 import { getColor } from './model.js';
 
 const FACTOR = 0.4;
+const PADDING = 20;
+
+const renderLines = function(ctx, lines, x0, y0, fontSize) {
+    ctx.fillStyle = 'currentColor';
+    ctx.font = `${fontSize}px sans-serif`;
+    lines.forEach((line, i) => {
+        ctx.fillText(line, x0, y0 + fontSize * 1.4 * i);
+    });
+};
 
 export class BlockView {
     constructor(block, ctx) {
@@ -29,6 +38,19 @@ export class BlockView {
         ];
     }
 
+    renderDebug(dir, x0, y0) {
+        const cars = this.block.flowTo.car[dir] + this.block.flowFrom.car[dir];
+        const bikes = this.block.flowTo.bike[dir] + this.block.flowFrom.bike[dir];
+        renderLines(this.ctx, [
+            `flowTo.car: ${this.block.flowTo.car[dir]}`,
+            `flowTo.bike: ${this.block.flowTo.bike[dir]}`,
+            `flowFrom.car: ${this.block.flowFrom.car[dir]}`,
+            `flowFrom.bike: ${this.block.flowFrom.bike[dir]}`,
+            `roadCapacity: ${this.block.roadCapacity[dir]}`,
+            `bikes %: ${bikes / (bikes + cars)}`,
+        ], x0, y0, 12);
+    }
+
     render(state) {
         this.ctx.fillStyle = 'currentColor';
         this.ctx.font = '16px sans-serif';
@@ -53,6 +75,18 @@ export class BlockView {
                 this.ctx.fill();
             }
         }
+
+        if (state.debug) {
+            const x0 = PADDING;
+            const x1 = (this.ctx.canvas.width - 2 * PADDING) / 4 * 3 + PADDING;
+            const y0 = PADDING + 40;
+            const y1 = (this.ctx.canvas.height - PADDING - y0) / 3 * 2 + y0;
+
+            this.renderDebug(DIR.NORTH, PADDING, y0);
+            this.renderDebug(DIR.WEST, PADDING, y1);
+            this.renderDebug(DIR.EAST, x1, y0);
+            this.renderDebug(DIR.SOUTH, x1, y1);
+        }
     }
 
     handleKey(event, state) {
@@ -70,6 +104,9 @@ export class BlockView {
             return true;
         } else if (event.key === '4') {
             state.terrain = TERRAIN.COMMERCIAL;
+            return true;
+        } else if (event.key === 'd') {
+            state.debug = !state.debug;
             return true;
         }
     }
