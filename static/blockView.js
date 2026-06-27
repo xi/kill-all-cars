@@ -1,5 +1,6 @@
 import { TERRAIN, DIR } from './constants.js';
 import { getColor } from './model.js';
+import { patternFill } from './patterns.js';
 
 const FACTOR = 0.4;
 const PADDING = 20;
@@ -79,6 +80,7 @@ export class BlockView {
     render(state) {
         for (let y = 0; y < this.block.constructor.size; y++) {
             for (let x = this.block.constructor.size - 1; x >= 0; x--) {
+                const [sx, sy] = this.toScreenXY(x, y);
                 this.ctx.beginPath();
                 if (x === state.xHighlight || y === state.yHighlight) {
                     this.ctx.fillStyle = getColor(state.terrain);
@@ -91,6 +93,20 @@ export class BlockView {
                 this.ctx.lineTo(...this.toScreenXY(x + 1, y));
                 this.ctx.closePath();
                 this.ctx.fill();
+            }
+        }
+
+        const patterns = patternFill(this.block);
+        for (let y = 0; y < this.block.constructor.size; y++) {
+            for (let x = this.block.constructor.size - 1; x >= 0; x--) {
+                const pattern = patterns[y][x];
+                if (pattern) {
+                    const [sx, syLeft] = this.toScreenXY(x, y);
+                    const sy = syLeft + this.size * FACTOR * pattern.y[1].length;
+                    const width = this.size * (pattern.x[1].length + pattern.y[1].length);
+                    const height = width * FACTOR * pattern.height;
+                    this.ctx.drawImage(pattern.img, sx, sy - height, width, height);
+                }
             }
         }
 
