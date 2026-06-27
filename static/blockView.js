@@ -6,13 +6,13 @@ const PADDING = 20;
 const HEADER_SIZE = 25;
 const FOOTER_SIZE = 50;
 
-const renderLines = function(ctx, lines, x0, y0, fontSize) {
+function renderLines(ctx, lines, x0, y0, fontSize) {
     ctx.fillStyle = 'currentColor';
     ctx.font = `${fontSize}px sans-serif`;
     lines.forEach((line, i) => {
         ctx.fillText(line, x0, y0 + fontSize * 1.4 * i);
     });
-};
+}
 
 export class BlockView {
     constructor(block, ctx) {

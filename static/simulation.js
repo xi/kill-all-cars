@@ -5,7 +5,7 @@ const INTERNAL_SHARE = 0.9;
 const ROAD_USAGE_CAR = 1;
 const ROAD_USAGE_BIKE = 0.1;
 
-const blockStep = function(block, params) {
+function blockStep(block, params) {
     const demand = block.residential + sum(params.demandFrom.car) + sum(params.demandFrom.bike);
     const servedInternal = Math.min(demand * INTERNAL_SHARE, block.commercial);
     const remainingDemand = demand - servedInternal;
@@ -46,9 +46,9 @@ const blockStep = function(block, params) {
         demandTo: demandTo,
         served: demand > 0 ? (servedInternal + flowToTotal) / demand : 1,
     };
-};
+}
 
-const getParams = function(city, conditions, x, y) {
+function getParams(city, conditions, x, y) {
     const block = city.blocks[y][x];
     const prev = conditions[y][x];
     const demandFrom = {
@@ -64,7 +64,7 @@ const getParams = function(city, conditions, x, y) {
         bike: Object.values(DIR).map(() => 0),
     };
 
-    var fill = function(dir, idir, nx, ny, isBoundary, b) {
+    var fill = (dir, idir, nx, ny, isBoundary, b) => {
         if (isBoundary) {
             // NOTE: we assume that bikes are mostly used inside of the city,
             // so boundary demand/supply is only cars
@@ -96,18 +96,18 @@ const getParams = function(city, conditions, x, y) {
         flowFrom: flowFrom,
         pollution: sum(flowTo.car) + sum(flowFrom.car),
     };
-};
+}
 
-const cityStep = function(city, conditions) {
+function cityStep(city, conditions) {
     const next = city.blocks.map(row => row.map(() => null));
     city.blocks.forEach((row, y) => row.forEach((block, x) => {
         const params = getParams(city, conditions, x, y);
         next[y][x] = blockStep(block, params);
     }));
     return next;
-};
+}
 
-export const solve = function(city, steps=100) {
+export function solve(city, steps=100) {
     // step 1: calculate basic scores based on terrain
     city.blocks.forEach(row => row.forEach(block => {
         // TODO: different values based on wave function collapse
@@ -131,7 +131,7 @@ export const solve = function(city, steps=100) {
     }));
 
     city.blocks.forEach((row, y) => row.forEach((block, x) => {
-        const setRoadCapacity = function(dir, isBoundary, nx, ny) {
+        const setRoadCapacity = (dir, isBoundary, nx, ny) => {
             const axis = dirToAxis(dir);
             const neighbor = isBoundary ? 1 : city.blocks[ny][nx].road[axis];
             block.roadCapacity[dir] = Math.min(block.road[axis], neighbor) / 2;
@@ -167,4 +167,4 @@ export const solve = function(city, steps=100) {
         block.greenServed = block.green;
         block.pollution = params.pollution;
     }));
-};
+}

@@ -13,7 +13,7 @@ const NON_STREET = [
     TERRAIN.COMMERCIAL,
 ];
 
-export const getColor = function(tx, ty) {
+export function getColor(tx, ty) {
     let [r, g, b] = COLORS[TERRAIN.STREET];
     if (!ty) {
         [r, g, b] = COLORS[tx];
@@ -21,7 +21,7 @@ export const getColor = function(tx, ty) {
         [r, g, b] = COLORS[tx].map((c, i) => (c + COLORS[ty][i]) / 2);
     }
     return `rgb(${r} ${g} ${b})`;
-};
+}
 
 class Block {
     static size = 11;

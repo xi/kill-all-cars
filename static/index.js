@@ -16,27 +16,27 @@ const state = {
     debug: false,
 };
 
-const getView = function() {
+function getView() {
     if (state.block) {
         return new BlockView(state.block, ctx);
     } else {
         return new CityView(city, ctx);
     }
-};
+}
 
-const refresh = function() {
+function refresh() {
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width;
     canvas.height = rect.height;
     solve(city);
     getView().render(state);
-};
+}
 
-const handle = function(event) {
+function handle(event) {
     if (getView().handle(event, state)) {
         refresh();
     }
-};
+}
 
 window.addEventListener('keyup', handle);
 canvas.addEventListener('click', handle);
