@@ -77,8 +77,6 @@ export class BlockView {
     }
 
     render(state) {
-        this.renderHeader();
-
         for (let y = 0; y < this.block.constructor.size; y++) {
             for (let x = this.block.constructor.size - 1; x >= 0; x--) {
                 this.ctx.beginPath();
@@ -107,6 +105,8 @@ export class BlockView {
             this.renderDebug(DIR.EAST, x1, y0);
             this.renderDebug(DIR.SOUTH, x1, y1);
         }
+
+        this.renderHeader();
 
         this.buttons.forEach(btn => {
             this.ctx.beginPath();
